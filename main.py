@@ -6,9 +6,11 @@ import os.path
 import sys
 import shutil
 import getpass
-
+import stat
+import time
 
 from pathlib import Path
+from shutil import rmtree
 
 
 def is_admin():
@@ -28,9 +30,16 @@ def is_admin():
 #
 # change_permissions_recursive('c:/Users/1/AppData/Roaming/Microsoft/Excel', 0o777)
 
+# def path_user(main_path):
+#     os.chmod(main_path, 0o444)
+
 def path_user(main_path):
+    # stats = os.stat(main_path)
+    # print(stats.st_mode)
+    # print(oct(stats.st_mode))
     for filename in os.listdir(main_path):
         file_path = os.path.join(main_path, filename)
+        # os.chmod(file_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO | stat.S_IWUSR | stat.S_IWGRP)
         try:
             if os.path.isfile(file_path) or os.path.islink(file_path):
                 os.unlink(file_path)
@@ -38,6 +47,19 @@ def path_user(main_path):
                 shutil.rmtree(file_path)
         except Exception as e:
             print("Failed to delete file %s. Reason: %s" % (file_path, e))
+            # os.chmod(file_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO | stat.S_IWUSR | stat.S_IWGRP)
+            for f in os.listdir(file_path):
+                filepath = os.path.join(file_path, f)
+                os.chmod(filepath, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO | stat.S_IWUSR | stat.S_IWGRP)
+                try:
+                    if os.path.isfile(filepath) or os.path.islink(filepath):
+                        os.unlink(filepath)
+                    elif os.path.isdir(filepath):
+                        shutil.rmtree(filepath)
+                except Exception as err:
+                    print("Failed to delete file %s. Reason: %s" % (filepath, err))
+                    print('ssss')
+                    # os.chmod(filepath, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO | stat.S_IWUSR | stat.S_IWGRP)
 
 
 def search_path(users):
@@ -80,3 +102,4 @@ def main():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
+
