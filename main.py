@@ -30,13 +30,8 @@ def is_admin():
 #
 # change_permissions_recursive('c:/Users/1/AppData/Roaming/Microsoft/Excel', 0o777)
 
-# def path_user(main_path):
-#     os.chmod(main_path, 0o444)
 
 def path_user(main_path):
-    # stats = os.stat(main_path)
-    # print(stats.st_mode)
-    # print(oct(stats.st_mode))
     for filename in os.listdir(main_path):
         file_path = os.path.join(main_path, filename)
         # os.chmod(file_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO | stat.S_IWUSR | stat.S_IWGRP)
